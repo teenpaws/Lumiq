@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pandoc \"Lumiq_Project_Discussion_v6.docx\" -o /tmp/lumiq.md)",
+      "Read(//tmp/**)",
+      "Bash(python -c \"import docx\")",
+      "Bash(where python *)",
+      "Bash(pip install *)",
+      "Bash(python -c ' *)",
+      "Bash(python -X utf8 -c ' *)",
+      "Bash(pytest --collect-only)"
+    ]
+  }
+}
