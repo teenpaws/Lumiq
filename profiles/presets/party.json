@@ -1,0 +1,9 @@
+{
+  "profile_name": "party", "source": "preset",
+  "created_at": "2026-04-18T00:00:00Z",
+  "base_colors": ["#ff0000", "#00ff00", "#0000ff", "#ffff00"],
+  "transition_speed_ms": 300, "beat_response": "pulse",
+  "energy_multiplier": 0.9, "mood_tag": "festive",
+  "pattern_preferences": ["wave_lr", "alternate_zones", "pulse_all"],
+  "composition_rule": "last_write_wins"
+}

@@ -1,0 +1,9 @@
+{
+  "profile_name": "lounge", "source": "preset",
+  "created_at": "2026-04-18T00:00:00Z",
+  "base_colors": ["#ff8c00", "#b03000", "#800020"],
+  "transition_speed_ms": 1200, "beat_response": "breathe",
+  "energy_multiplier": 0.4, "mood_tag": "warm_relaxed",
+  "pattern_preferences": ["breathe_all", "pulse_all"],
+  "composition_rule": "last_write_wins"
+}

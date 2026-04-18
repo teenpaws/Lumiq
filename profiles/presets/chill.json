@@ -1,0 +1,9 @@
+{
+  "profile_name": "chill", "source": "preset",
+  "created_at": "2026-04-18T00:00:00Z",
+  "base_colors": ["#001a4d", "#003366", "#1a3366"],
+  "transition_speed_ms": 2000, "beat_response": "breathe",
+  "energy_multiplier": 0.3, "mood_tag": "calm_nocturnal",
+  "pattern_preferences": ["breathe_all"],
+  "composition_rule": "last_write_wins"
+}

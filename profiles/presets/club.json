@@ -1,0 +1,9 @@
+{
+  "profile_name": "club", "source": "preset",
+  "created_at": "2026-04-18T00:00:00Z",
+  "base_colors": ["#ff0080", "#8000ff", "#0080ff"],
+  "transition_speed_ms": 200, "beat_response": "strobe",
+  "energy_multiplier": 1.0, "mood_tag": "high_energy",
+  "pattern_preferences": ["pulse_all", "alternate_zones"],
+  "composition_rule": "last_write_wins"
+}

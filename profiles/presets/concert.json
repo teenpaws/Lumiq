@@ -1,0 +1,9 @@
+{
+  "profile_name": "concert", "source": "preset",
+  "created_at": "2026-04-18T00:00:00Z",
+  "base_colors": ["#ffffff", "#ffff80", "#ff8000"],
+  "transition_speed_ms": 400, "beat_response": "pulse",
+  "energy_multiplier": 0.85, "mood_tag": "live_performance",
+  "pattern_preferences": ["radial", "wave_lr", "pulse_all"],
+  "composition_rule": "last_write_wins"
+}
