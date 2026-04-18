@@ -1,0 +1,32 @@
+[
+  {
+    "name": "pulse_all",
+    "min_bulbs": 1,
+    "requires": [],
+    "composable_with": []
+  },
+  {
+    "name": "breathe_all",
+    "min_bulbs": 1,
+    "requires": [],
+    "composable_with": ["wave_lr", "alternate_zones"]
+  },
+  {
+    "name": "alternate_zones",
+    "min_bulbs": 2,
+    "requires": ["zones"],
+    "composable_with": ["breathe_all"]
+  },
+  {
+    "name": "wave_lr",
+    "min_bulbs": 3,
+    "requires": ["x_coords"],
+    "composable_with": ["breathe_all"]
+  },
+  {
+    "name": "radial",
+    "min_bulbs": 4,
+    "requires": ["x_coords", "y_coords"],
+    "composable_with": []
+  }
+]
