@@ -23,6 +23,29 @@ def save_room():
     current_app.config["choreo"].update_devices(devices)
     return jsonify({"saved": True, "device_count": len(devices)})
 
+@bp.get("/rooms")
+def list_rooms():
+    room_store = current_app.config["room_store"]
+    return jsonify({"rooms": room_store.list_rooms()})
+
+@bp.post("/rooms/<name>/save")
+def save_named_room(name):
+    room_store = current_app.config["room_store"]
+    room_store.save_named(name)
+    return jsonify({"saved": name})
+
+@bp.post("/rooms/<name>/load")
+def load_named_room(name):
+    room_store = current_app.config["room_store"]
+    try:
+        room_store.load_named(name)
+        devices = room_store.get_devices()
+        current_app.config["controller"].update_devices(devices)
+        current_app.config["choreo"].update_devices(devices)
+        return jsonify({"loaded": name, "device_count": len(devices)})
+    except KeyError as e:
+        return jsonify({"error": str(e)}), 404
+
 @bp.post("/room/blink/<device_id>")
 def blink(device_id):
     controller = current_app.config["controller"]

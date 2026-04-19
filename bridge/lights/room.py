@@ -44,3 +44,34 @@ class RoomStore:
 
     def get_floor_plan(self) -> dict:
         return self._floor_plan
+
+    # ── Named room profiles ──────────────────────────────────────────────────
+
+    def _rooms_dir(self) -> str:
+        base = os.path.dirname(self._path) or "."
+        return os.path.join(base, "rooms")
+
+    def list_rooms(self) -> list:
+        d = self._rooms_dir()
+        if not os.path.exists(d):
+            return []
+        return [f[:-5] for f in os.listdir(d) if f.endswith(".json")]
+
+    def save_named(self, name: str):
+        """Save current room config under a named profile."""
+        d = self._rooms_dir()
+        os.makedirs(d, exist_ok=True)
+        with open(os.path.join(d, f"{name}.json"), "w") as f:
+            json.dump({
+                "floor_plan": self._floor_plan,
+                "devices": [dev.__dict__ for dev in self._devices],
+            }, f, indent=2)
+
+    def load_named(self, name: str):
+        """Load a named room profile as the active room."""
+        path = os.path.join(self._rooms_dir(), f"{name}.json")
+        if not os.path.exists(path):
+            raise KeyError(f"Room profile '{name}' not found")
+        with open(path) as f:
+            data = json.load(f)
+        self.save(data["floor_plan"], [Device(**d) for d in data["devices"]])
