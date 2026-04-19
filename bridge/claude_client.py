@@ -41,6 +41,12 @@ class ClaudeClient:
             messages=[{"role": "user", "content": user_prompt}],
         )
         text = response.content[0].text.strip()
+        # Strip markdown code fences if Claude wraps the JSON
+        if text.startswith("```"):
+            text = text.split("```", 2)[1]
+            if text.startswith("json"):
+                text = text[4:]
+            text = text.strip()
         try:
             profile = json.loads(text)
         except json.JSONDecodeError as e:
