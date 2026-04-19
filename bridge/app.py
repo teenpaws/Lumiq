@@ -1,6 +1,7 @@
 # bridge/app.py
 import os
 from flask import Flask
+from flask_cors import CORS
 from bridge.config import Config
 from bridge.logger import setup_logger
 from bridge.state import get_state
@@ -19,6 +20,7 @@ def create_app(config: Config = None) -> Flask:
     setup_logger(config.log_path)
 
     app = Flask(__name__)
+    CORS(app)
     app.config["LUMIQ_CONFIG"] = config
 
     room_store = RoomStore(config.room_profile_path)
