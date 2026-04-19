@@ -10,11 +10,18 @@ export function RoomPage() {
   const [devices, setDevices] = useState([]);
   const [calibrating, setCalibrating] = useState(false);
   const [calibrationResults, setCalibrationResults] = useState(null);
+  const [savedRooms, setSavedRooms] = useState([]);
+  const [saveName, setSaveName] = useState('');
+  const [saveMsg, setSaveMsg] = useState(null);
 
   useEffect(() => {
     if (!bridgeUrl) return;
-    createClient(bridgeUrl).getRoom()
+    const client = createClient(bridgeUrl);
+    client.getRoom()
       .then(({ floor_plan, devices: devs }) => { setFloorPlan(floor_plan); setDevices(devs); })
+      .catch(() => {});
+    client.listRooms()
+      .then(({ rooms }) => setSavedRooms(rooms))
       .catch(() => {});
   }, [bridgeUrl]);
 
@@ -34,19 +41,55 @@ export function RoomPage() {
     await createClient(bridgeUrl).saveRoom(floorPlan, devices);
   }
 
+  async function handleSaveNamed(e) {
+    e.preventDefault();
+    const name = saveName.trim();
+    if (!name) return;
+    await createClient(bridgeUrl).saveNamedRoom(name);
+    setSavedRooms((prev) => [...new Set([...prev, name])]);
+    setSaveMsg(`Saved as "${name}"`);
+    setSaveName('');
+    setTimeout(() => setSaveMsg(null), 3000);
+  }
+
+  async function handleLoadRoom(name) {
+    const client = createClient(bridgeUrl);
+    await client.loadNamedRoom(name);
+    const { floor_plan, devices: devs } = await client.getRoom();
+    setFloorPlan(floor_plan);
+    setDevices(devs);
+  }
+
   return (
     <div className="p-4 space-y-4 pb-16 min-h-screen bg-zinc-950">
       <h1 className="text-lg font-semibold text-zinc-100">Room Setup</h1>
+
+      {savedRooms.length > 0 && (
+        <div className="space-y-2">
+          <h2 className="text-xs uppercase tracking-widest text-zinc-500">Saved Rooms</h2>
+          <div className="flex flex-wrap gap-2">
+            {savedRooms.map((name) => (
+              <button key={name} onClick={() => handleLoadRoom(name)}
+                className="px-3 py-1.5 rounded-full text-sm bg-zinc-800 text-zinc-300 hover:bg-purple-700 hover:text-white transition-colors">
+                {name}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
       <div className="space-y-1">
         <p className="text-xs text-zinc-500">Floor plan ({floorPlan.width_m}m × {floorPlan.length_m}m)</p>
         <FloorPlanCanvas floorPlan={floorPlan} devices={devices} pendingDevice={null} onPlaceDevice={() => {}} />
       </div>
+
       <div className="space-y-2">
         {devices.length === 0 && <p className="text-sm text-zinc-500">No devices in room profile yet.</p>}
         {devices.map((d) => (
           <DeviceCard key={d.id} device={d} onBlinked={() => {}} />
         ))}
       </div>
+
       <button onClick={handleCalibrate} disabled={calibrating || devices.length === 0}
         className="w-full py-2 rounded-lg bg-zinc-800 text-zinc-100 text-sm font-medium disabled:opacity-50">
         {calibrating ? 'Calibrating…' : 'Calibrate Latency'}
@@ -56,9 +99,21 @@ export function RoomPage() {
           {Object.entries(calibrationResults).map(([id, ms]) => <p key={id}>{id}: {ms}ms</p>)}
         </div>
       )}
+
       <button onClick={handleSave} className="w-full py-2 rounded-lg bg-purple-600 text-white text-sm font-medium">
         Save Room
       </button>
+
+      <form onSubmit={handleSaveNamed} className="flex gap-2">
+        <input value={saveName} onChange={(e) => setSaveName(e.target.value)}
+          placeholder="Save as named profile… (e.g. living_room)"
+          className="flex-1 bg-zinc-800 text-zinc-100 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-purple-500" />
+        <button type="submit" disabled={!saveName.trim()}
+          className="px-4 py-2 rounded-lg bg-zinc-700 text-zinc-100 text-sm font-medium disabled:opacity-40">
+          Save
+        </button>
+      </form>
+      {saveMsg && <p className="text-green-400 text-xs">{saveMsg}</p>}
     </div>
   );
 }

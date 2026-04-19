@@ -24,5 +24,8 @@ export function createClient(bridgeUrl) {
     saveRoom:      (floor_plan, devices)                       => req('POST', '/room',             { floor_plan, devices }),
     blinkDevice:   (device_id)                                 => req('POST', `/room/blink/${device_id}`),
     calibrate:     ()                                          => req('POST', '/room/calibrate'),
+    listRooms:     ()                                          => req('GET',  '/rooms'),
+    saveNamedRoom: (name)                                      => req('POST', `/rooms/${encodeURIComponent(name)}/save`),
+    loadNamedRoom: (name)                                      => req('POST', `/rooms/${encodeURIComponent(name)}/load`),
   };
 }
