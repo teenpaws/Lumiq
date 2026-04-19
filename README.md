@@ -115,3 +115,11 @@ pytest -v
    ```
 6. Assign the Pi a static IP in your router's DHCP settings (use the Pi's MAC address)
 7. Confirm bridge is accessible from your laptop: `curl http://<pi-ip>:5000/health`
+
+---
+
+## Credits
+
+- BPM data provided by [GetSongBPM](https://getsongbpm.com)
+- AI lighting profiles powered by [Anthropic Claude](https://anthropic.com)
+- Smart bulb control via [TinyTuya](https://github.com/jasonacox/tinytuya)
