@@ -3,8 +3,9 @@ export function createClient(bridgeUrl) {
 
   async function req(method, path, body) {
     const opts = { method, signal: AbortSignal.timeout(5000) };
+    opts.headers = { 'ngrok-skip-browser-warning': '1' };
     if (body !== undefined) {
-      opts.headers = { 'Content-Type': 'application/json' };
+      opts.headers['Content-Type'] = 'application/json';
       opts.body = JSON.stringify(body);
     }
     const res = await fetch(`${base}${path}`, opts);
