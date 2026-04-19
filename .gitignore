@@ -1,0 +1,22 @@
+# Worktrees
+.worktrees/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.env
+venv/
+.venv/
+
+# Logs
+logs/
+
+# Node / PWA
+pwa/node_modules/
+pwa/dist/
+pwa/.env
+
+# OS
+.DS_Store
+Thumbs.db
