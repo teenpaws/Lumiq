@@ -15,6 +15,7 @@ class Device:
     latency_ms: int
     online: bool
     capabilities: List[str]  # e.g. ["rgb", "brightness", "white"]
+    version: str = "3.5"
 
 
 @dataclass

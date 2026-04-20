@@ -24,7 +24,7 @@ class LightController:
                 dev_id=d.tuya_id,
                 address=d.address,
                 local_key=d.local_key,
-                version="3.3",
+                version=str(getattr(d, 'version', '3.5')),
             )
             bulb.set_socketPersistent(True)
             self._bulbs[device_id] = bulb
