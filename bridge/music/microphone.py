@@ -24,13 +24,15 @@ class MicrophoneProvider(MusicDataProvider):
             sd.wait()
             audio = np.array(audio).flatten()
             tempo, beat_frames = librosa.beat.beat_track(y=audio, sr=_SAMPLE_RATE)
+            # librosa >= 0.10 may return tempo as a 1-element ndarray
+            tempo_val = float(np.atleast_1d(tempo).flat[0])
             beat_times = librosa.frames_to_time(beat_frames, sr=_SAMPLE_RATE)
             beat_grid = [
-                BeatEvent(start=float(t), duration=60.0 / max(float(tempo), 1), confidence=0.5)
+                BeatEvent(start=float(t), duration=60.0 / max(tempo_val, 1), confidence=0.5)
                 for t in beat_times
             ]
             return AudioFeatures(
-                bpm=float(tempo), energy=0.5, valence=0.5,
+                bpm=tempo_val, energy=0.5, valence=0.5,
                 mood_tag="mic_detected", beat_grid=beat_grid, source_tier=3,
             )
         except Exception as e:

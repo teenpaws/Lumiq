@@ -26,6 +26,7 @@ class LightController:
                 local_key=d.local_key,
                 version=str(getattr(d, 'version', '3.5')),
             )
+            bulb.set_bulb_type("A")   # Wipro v3.5 uses DPS 20-27 (Type A)
             bulb.set_socketPersistent(True)
             self._bulbs[device_id] = bulb
         return self._bulbs[device_id]
@@ -43,7 +44,8 @@ class LightController:
                         cmd.device_id, cmd.hex_color, cmd.brightness_pct)
         except Exception as e:
             logger.error("send_command failed device=%s error=%s", cmd.device_id, e)
-            self._devices[cmd.device_id].online = False
+            # Drop the stale connection so the next attempt reconnects fresh
+            self._bulbs.pop(cmd.device_id, None)
 
     def blink(self, device_id: str):
         bulb = self._get_bulb(device_id)

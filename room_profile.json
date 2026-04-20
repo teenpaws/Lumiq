@@ -1,0 +1,23 @@
+{
+  "floor_plan": {
+    "width_m": 4.0,
+    "length_m": 3.0,
+    "shape": "rectangle"
+  },
+  "devices": [
+    {
+      "id": "bulb_01",
+      "tuya_id": "bfbfc7d2ac662d2e9f62wx",
+      "local_key": "g=L}s2)V=z]7hxwX",
+      "address": "192.168.1.50",
+      "type": "color_bulb",
+      "x": 2.0,
+      "y": 1.5,
+      "zone": "center",
+      "latency_ms": 50,
+      "online": true,
+      "capabilities": ["rgb", "brightness", "color_temp"],
+      "version": "3.5"
+    }
+  ]
+}
