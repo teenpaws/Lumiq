@@ -1,14 +1,44 @@
+import { useState, useEffect, useRef } from 'react';
 import { useSpotifyPoller } from '../hooks/useSpotifyPoller.js';
 import { useBridgeStatus } from '../hooks/useBridgeStatus.js';
 import { StatusBanner } from '../components/StatusBanner.jsx';
 import { ModePanel } from '../components/ModePanel.jsx';
 import { useStore } from '../store/useStore.js';
+import { createClient } from '../api/bridge.js';
 import { buildAuthUrl } from '../auth/pkce.js';
+
+const MIC_INTERVAL_MS = 8000;
 
 export function HomePage() {
   useSpotifyPoller();
   useBridgeStatus();
-  const { currentTrack, accessToken } = useStore((s) => ({ currentTrack: s.currentTrack, accessToken: s.accessToken }));
+  const { currentTrack, accessToken, bridgeUrl } = useStore((s) => ({
+    currentTrack: s.currentTrack,
+    accessToken: s.accessToken,
+    bridgeUrl: s.bridgeUrl,
+  }));
+  const [micSync, setMicSync] = useState(false);
+  const intervalRef = useRef(null);
+
+  useEffect(() => {
+    if (!micSync || !bridgeUrl) return;
+    const client = createClient(bridgeUrl);
+    // Fire immediately, then repeat every 8s
+    client.pushTrack('mic_test', 0, true, '').catch(() => {});
+    intervalRef.current = setInterval(() => {
+      client.pushTrack('mic_test', 0, true, '').catch(() => {});
+    }, MIC_INTERVAL_MS);
+    return () => clearInterval(intervalRef.current);
+  }, [micSync, bridgeUrl]);
+
+  function toggleMicSync() {
+    if (micSync) {
+      // Stop
+      clearInterval(intervalRef.current);
+      if (bridgeUrl) createClient(bridgeUrl).pushTrack('mic_test', 0, false, '').catch(() => {});
+    }
+    setMicSync((v) => !v);
+  }
 
   async function connectSpotify() {
     const url = await buildAuthUrl(import.meta.env.VITE_SPOTIFY_CLIENT_ID, import.meta.env.VITE_SPOTIFY_REDIRECT_URI);
@@ -31,6 +61,27 @@ export function HomePage() {
           <p className="text-xs text-zinc-500 truncate">{currentTrack.artist}</p>
         </div>
       )}
+
+      {/* Mic Beat Sync (no Spotify needed) */}
+      <div className="px-4 pt-4">
+        <button
+          onClick={toggleMicSync}
+          disabled={!bridgeUrl}
+          className={`w-full py-3 rounded-xl text-sm font-semibold transition-colors ${
+            micSync
+              ? 'bg-purple-600 text-white animate-pulse'
+              : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700'
+          } disabled:opacity-40`}
+        >
+          {micSync ? '🎙 Syncing to Beat — Tap to Stop' : '🎙 Start Beat Sync (Mic)'}
+        </button>
+        {micSync && (
+          <p className="text-xs text-zinc-500 mt-1 text-center">
+            Play music near your laptop · bridge listens every 8s
+          </p>
+        )}
+      </div>
+
       <ModePanel />
     </div>
   );
